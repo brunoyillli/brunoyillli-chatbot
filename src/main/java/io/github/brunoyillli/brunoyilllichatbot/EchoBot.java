@@ -65,7 +65,7 @@ public class EchoBot extends TelegramLongPollingBot {
 
 	private SendMessage responder(Update update) {
 		String textoMensagem = update.getMessage().getText().toLowerCase();
-		String charId = update.getMessage().getChatId().toString();
+		String chatId = update.getMessage().getChatId().toString();
 		FunctionalityBot functionalityBot = new FunctionalityBot();
 		String resposta = " ";
 		sendMsg(update.getMessage().getChatId().toString(), textoMensagem, update);
@@ -86,7 +86,7 @@ public class EchoBot extends TelegramLongPollingBot {
 		} else if (textoMensagem.equals("/button")) {
 			ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
 			SendMessage mensagem = new SendMessage();
-			mensagem.setChatId(charId);
+			mensagem.setChatId(chatId);
 			mensagem.setText("Selecione uma das caixas");
 			List<KeyboardRow> keyboard = new ArrayList<>();
 			KeyboardRow row = new KeyboardRow();
@@ -106,14 +106,14 @@ public class EchoBot extends TelegramLongPollingBot {
 			sendText(mensagem);
 		} else if (textoMensagem.equals("/kaneki")) {
 			SendPhoto msg = new SendPhoto();
-			msg.setChatId(charId);
+			msg.setChatId(chatId);
 			msg.setPhoto(new InputFile(
 					"AgACAgEAAxkBAAPmYwug-A-hNgI96vsqkkDL9gSDrLAAAjOrMRtZX2FEhHvs0MK0cOUBAAMCAAN3AAMpBA"));
 			msg.setCaption("Kaneki Branco");
 			sendPhoto(msg);
 		}else if (textoMensagem.equals("/clearbutton")) {
             SendMessage msg = new SendMessage();
-            msg.setChatId(charId);
+            msg.setChatId(chatId);
             msg.setText("Keyboard removido use /button para aparecer novas opções");
             ReplyKeyboardRemove keyboardMarkup = new ReplyKeyboardRemove();
             keyboardMarkup.setSelective(true);
@@ -125,7 +125,7 @@ public class EchoBot extends TelegramLongPollingBot {
 			resposta = "\nDigite /help para ver os comandos disponiveis.";
 		}
 
-		return SendMessage.builder().text(resposta).chatId(charId).build();
+		return SendMessage.builder().text(resposta).chatId(chatId).build();
 	}
 
 	private void sendText(SendMessage msg) {
@@ -138,7 +138,7 @@ public class EchoBot extends TelegramLongPollingBot {
 	}
 	
 	private void sendPhoto(SendPhoto msg) {
-		System.out.println("Enviando a foto ...");
+		System.out.println("Executando comando para " + msg.getChatId());
 		try {
 			execute(msg);
 		} catch (TelegramApiException e) {
@@ -151,6 +151,7 @@ public class EchoBot extends TelegramLongPollingBot {
 	public synchronized void sendMsg(String chatId, String message, Update update) {
 
 		if ("/start".equals(message)) {
+			LogoMurlock(chatId, message,update);
 			String firstName = update.getMessage().getFrom().getFirstName();
 			SendMessage response = new SendMessage();
 			response.enableMarkdown(true);
@@ -163,5 +164,14 @@ public class EchoBot extends TelegramLongPollingBot {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void LogoMurlock(String chatId, String message, Update update) {
+		SendPhoto msg = new SendPhoto();
+		msg.setChatId(chatId);
+		msg.setPhoto(new InputFile(
+				"AgACAgEAAxkBAAIBaWMLsuX-ikwryGyxEW_Bn-SEG226AAJRqzEbWV9hRFfzC_s1XOqVAQADAgADbQADKQQ"));
+		msg.setCaption("Aaaaaughibbrgubugbugrguburgle");
+		sendPhoto(msg);
 	}
 }
